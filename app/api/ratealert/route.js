@@ -1,4 +1,5 @@
-const { fetchOffers, buildRankings } = require("../lib/ratealert");
+import { NextResponse } from "next/server";
+import { buildRankings, fetchOffers } from "../../../lib/ratealert";
 
 function parseHorizons(raw) {
   if (!raw) return [90, 180, 365];
@@ -16,31 +17,25 @@ function parseHorizons(raw) {
   return horizons;
 }
 
-module.exports = async function handler(req, res) {
-  if (req.method !== "GET") {
-    res.status(405).json({ error: "Method not allowed" });
-    return;
-  }
-
-  const principalRaw = req.query.principal ?? "100000";
-  const horizonsRaw = req.query.horizons;
-  const topNRaw = req.query.top_n ?? "10";
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+  const principalRaw = searchParams.get("principal") ?? "100000";
+  const horizonsRaw = searchParams.get("horizons");
+  const topNRaw = searchParams.get("top_n") ?? "10";
 
   let principal;
   try {
     principal = Number(principalRaw);
     if (!Number.isFinite(principal) || principal <= 0) throw new Error();
   } catch {
-    res.status(400).json({ error: "principal must be a positive number" });
-    return;
+    return NextResponse.json({ error: "principal must be a positive number" }, { status: 400 });
   }
 
   let horizons;
   try {
     horizons = parseHorizons(horizonsRaw);
   } catch (err) {
-    res.status(400).json({ error: err.message || "invalid horizons" });
-    return;
+    return NextResponse.json({ error: err.message || "invalid horizons" }, { status: 400 });
   }
 
   let topN;
@@ -48,26 +43,26 @@ module.exports = async function handler(req, res) {
     topN = Number.parseInt(topNRaw, 10);
     if (!Number.isFinite(topN) || topN <= 0) throw new Error();
   } catch {
-    res.status(400).json({ error: "top_n must be a positive integer" });
-    return;
+    return NextResponse.json({ error: "top_n must be a positive integer" }, { status: 400 });
   }
 
   let offers;
   try {
     offers = await fetchOffers();
   } catch (err) {
-    res.status(502).json({ error: "Upstream fetch failed", detail: err.message || String(err) });
-    return;
+    return NextResponse.json(
+      { error: "Upstream fetch failed", detail: err.message || String(err) },
+      { status: 502 }
+    );
   }
 
   if (!offers.length) {
-    res.status(502).json({ error: "No offers parsed from upstream response" });
-    return;
+    return NextResponse.json({ error: "No offers parsed from upstream response" }, { status: 502 });
   }
 
   const rankings = buildRankings(offers, principal, horizons, topN);
 
-  res.status(200).json({
+  return NextResponse.json({
     principal,
     horizons,
     top_n: topN,
@@ -75,4 +70,4 @@ module.exports = async function handler(req, res) {
     rankings,
     source: "independer",
   });
-};
+}
