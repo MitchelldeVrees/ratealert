@@ -1,0 +1,667 @@
+[
+  {
+    "name": "Nexent Bank — Spaarrekening",
+    "bank": "Nexent Bank",
+    "url": "https://www.awin1.com/cread.php?awinmid=76726&awinaffid=375859",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 1000000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0275,
+        "days": 90,
+        "cap": 1000000.0
+      },
+      {
+        "annual_rate": 0.0125,
+        "days": null,
+        "cap": 1000000.0
+      }
+    ]
+  },
+  {
+    "name": "Yapi Kredi Bank — Euro-Plus Spaarrekening",
+    "bank": "Yapi Kredi Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.03,
+        "days": 90,
+        "cap": null
+      },
+      {
+        "annual_rate": 0.018,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "DHB Bank — S@veOnline",
+    "bank": "DHB Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.02,
+        "days": 180,
+        "cap": 500000.0
+      },
+      {
+        "annual_rate": 0.016,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "Garantibank — Gouden Internet Rekening",
+    "bank": "Garantibank",
+    "url": "https://garantibank.nl/nieuwespaarderactie_particulier?utm_source=independer&utm_medium=cpc&utm_campaign=nieuwespaarder-ind",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.027999999999999997,
+        "days": 180,
+        "cap": null
+      },
+      {
+        "annual_rate": 0.015499999999999996,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Centraal Beheer — RentePlus Rekening",
+    "bank": "Centraal Beheer",
+    "url": "https://www.awin1.com/awclick.php?gid=317364&mid=8357&awinaffid=375859&linkid=3251578&clickref=independer",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.015,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Argenta — Internetspaarrekening",
+    "bank": "Argenta",
+    "url": "",
+    "guarantee_country": "BE",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.016,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Triodos Bank — Internet Sparen",
+    "bank": "Triodos Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.0125,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "ASN Bank — Ideaalsparen",
+    "bank": "ASN Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.013000000000000001,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Anadolubank — Alfa Spaarrekening",
+    "bank": "Anadolubank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.017,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "NIBC Direct — Internetspaarrekening",
+    "bank": "NIBC Direct",
+    "url": "https://nibc.nl/particulieren/sparen/spaarrekening?utm_source=independer&utm_medium=cpc&utm_campaign=sparen_juli_2023",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.014499999999999999,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Ayvens Bank — Spaarrekening",
+    "bank": "Ayvens Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0187,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "Lloyds Bank — Internet Spaarrekening",
+    "bank": "Lloyds Bank",
+    "url": "https://www.lloydsbank.nl/sparen?utm_source=Independer&utm_medium=Affiliate&utm_campaign=Sparen&utm_content=independer-nl",
+    "guarantee_country": "DE",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.015,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Anadolubank — Alfa Rente Direct Spaarrekening",
+    "bank": "Anadolubank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.017,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "Knab — Knab Flexibel Sparen",
+    "bank": "Knab",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.013999999999999999,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Anadolubank — Alfa Slimmer Sparen",
+    "bank": "Anadolubank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0175,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "Nationale-Nederlanden Bank — Internetsparen",
+    "bank": "Nationale-Nederlanden Bank",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.013000000000000001,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Brand New Day — Brand New Day Spaarrekening",
+    "bank": "Brand New Day",
+    "url": "",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 10000000.0,
+    "segments": [
+      {
+        "annual_rate": 0.013000000000000001,
+        "days": null,
+        "cap": 10000000.0
+      }
+    ]
+  },
+  {
+    "name": "BIGBANK — Flexibel Sparen",
+    "bank": "BIGBANK",
+    "url": "https://ds1.nl/c/?si=3398&li=1162648&wi=77764&ws=&dl=flexibel-sparen%2F",
+    "guarantee_country": "EST",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.025,
+        "days": 180,
+        "cap": null
+      },
+      {
+        "annual_rate": 0.021,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Banca Progetto — Banca Progetto Spaarrekening",
+    "bank": "Banca Progetto",
+    "url": "https://www.financeads.net/tc.php?t=33293C244060594T",
+    "guarantee_country": "ITA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 10000.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.019,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "OpenBank — Open Spaarrekening",
+    "bank": "OpenBank",
+    "url": "https://www.financeads.net/tc.php?t=33293C3334123333T",
+    "guarantee_country": "SPA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.019,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Nordax Bank — Spaarrekening",
+    "bank": "Nordax Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440124023T",
+    "guarantee_country": "ZW",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 85000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018600000000000002,
+        "days": null,
+        "cap": 85000.0
+      }
+    ]
+  },
+  {
+    "name": "Renault Bank — Spaarrekening",
+    "bank": "Renault Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440124029T",
+    "guarantee_country": "FR",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018000000000000002,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Bunq — Bunq Free Spaarrekening",
+    "bank": "Bunq",
+    "url": "https://www.financeads.net/tc.php?t=33293C278498574T",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.020099999999999996,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "OpenBank — Welkom Spaarrekening",
+    "bank": "OpenBank",
+    "url": "https://www.financeads.net/tc.php?t=33293C3334123331T",
+    "guarantee_country": "SPA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.03,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Inbank — Spaarrekening",
+    "bank": "Inbank",
+    "url": "https://www.financeads.net/tc.php?t=33293C244047584T",
+    "guarantee_country": "EST",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018500000000000003,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "BankB — Spaarrekening",
+    "bank": "BankB",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440105908T",
+    "guarantee_country": "BE",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1000.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0175,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Collector — Collector Spaarrekening",
+    "bank": "Collector",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440124017T",
+    "guarantee_country": "ZW",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 85000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018600000000000002,
+        "days": null,
+        "cap": 85000.0
+      }
+    ]
+  },
+  {
+    "name": "Santander — Internetspaarrekening",
+    "bank": "Santander",
+    "url": "https://www.financeads.net/tc.php?t=33293C4832112778T",
+    "guarantee_country": "SPA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.0202,
+        "days": null,
+        "cap": null
+      }
+    ]
+  },
+  {
+    "name": "Distingo Bank — Spaarrekening",
+    "bank": "Distingo Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440111760T",
+    "guarantee_country": "FR",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0191,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "TF-Bank — TF Bank Spaarrekening",
+    "bank": "TF-Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440113042T",
+    "guarantee_country": "ZW",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 85000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018500000000000003,
+        "days": null,
+        "cap": 85000.0
+      }
+    ]
+  },
+  {
+    "name": "Alisa Bank — Spaarrekening",
+    "bank": "Alisa Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440112758T",
+    "guarantee_country": "FN",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0125,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Morrow — Spaarrekening",
+    "bank": "Morrow",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440114962T",
+    "guarantee_country": "N",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0183,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Imprebanca — Spaarrekening",
+    "bank": "Imprebanca",
+    "url": "https://www.financeads.net/tc.php?t=33293C244067518T",
+    "guarantee_country": "ITA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 10000.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.018500000000000003,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "EuroExtra — Spaarrekening",
+    "bank": "EuroExtra",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440123449T",
+    "guarantee_country": "DE",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 1000000.0,
+    "segments": [
+      {
+        "annual_rate": 0.016,
+        "days": null,
+        "cap": 1000000.0
+      }
+    ]
+  },
+  {
+    "name": "Klarna — Flex rekening",
+    "bank": "Klarna",
+    "url": "https://www.financeads.net/tc.php?t=33293C4958123969T",
+    "guarantee_country": "ZW",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": 500000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0175,
+        "days": null,
+        "cap": 500000.0
+      }
+    ]
+  },
+  {
+    "name": "Banca CF+ — SprintSparen",
+    "bank": "Banca CF+",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440124013T",
+    "guarantee_country": "ITA",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0192,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Carrefour Banque — Spaarrekening",
+    "bank": "Carrefour Banque",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440127633T",
+    "guarantee_country": "FR",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0175,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "FCM Bank — Spaarrekening",
+    "bank": "FCM Bank",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440127895T",
+    "guarantee_country": "MT",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 100000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0191,
+        "days": null,
+        "cap": 100000.0
+      }
+    ]
+  },
+  {
+    "name": "Raisin — Spaarrekening",
+    "bank": "Raisin",
+    "url": "https://www.financeads.net/tc.php?t=33293C2440131565T",
+    "guarantee_country": "DE",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 1.0,
+    "max_deposit": 50000.0,
+    "segments": [
+      {
+        "annual_rate": 0.0285,
+        "days": null,
+        "cap": 50000.0
+      }
+    ]
+  },
+  {
+    "name": "NIBC Direct — Kwartaal spaarrekening",
+    "bank": "NIBC Direct",
+    "url": "https://nibc.nl/particulieren/sparen/spaarrekening?utm_source=independer&utm_medium=cpc&utm_campaign=sparen_juli_2023",
+    "guarantee_country": "NL",
+    "guarantee_amount": 100000.0,
+    "min_deposit": 0.0,
+    "max_deposit": null,
+    "segments": [
+      {
+        "annual_rate": 0.015,
+        "days": null,
+        "cap": null
+      }
+    ]
+  }
+]
