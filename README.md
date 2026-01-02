@@ -33,4 +33,4 @@ vercel login           # if needed
 vercel                 # first deploy, accepts defaults
 ```
 
-`vercel.json` routes `/` to the ratealert API; runtime is auto-detected by Vercel's Python builder.
+`vercel.json` rewrites `/` to the ratealert API; runtime is auto-detected by Vercel's Python builder.
