@@ -107,11 +107,11 @@ export async function GET(request) {
   if (!baseUrl || !secret) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
-  const token = signToken(
+  const unsubscribeToken = signToken(
     { email: payload.email, type: "unsubscribe", exp: Date.now() + 1000 * 60 * 60 * 24 * 30 },
     secret
   );
-  const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
+  const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
   const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
 
   try {
