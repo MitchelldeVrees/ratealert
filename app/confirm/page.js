@@ -6,6 +6,7 @@ export default function ConfirmPage({ searchParams }) {
   const token = searchParams?.token || "";
   const [state, setState] = useState("loading");
   const [message, setMessage] = useState("Bezig met bevestigen...");
+  const [nextSend, setNextSend] = useState("");
 
   useEffect(() => {
     if (!token) {
@@ -19,9 +20,14 @@ export default function ConfirmPage({ searchParams }) {
         if (!res.ok) throw new Error(data.error || "Bevestigen mislukt");
         return data;
       })
-      .then(() => {
+      .then((data) => {
         setState("success");
-        setMessage("Je e-mail is bevestigd. Je ontvangt elke week de Top 5.");
+        setMessage("Je e-mail is bevestigd.");
+        if (data?.next_send) {
+          setNextSend(data.next_send);
+        } else {
+          setNextSend("Je ontvangt elke week de Top 5 op vrijdag.");
+        }
       })
       .catch((err) => {
         setState("error");
@@ -34,6 +40,7 @@ export default function ConfirmPage({ searchParams }) {
       <div className="card max-w-md w-full p-6 text-center">
         <h1 className="font-display text-2xl mb-2">Bevestiging</h1>
         <p className={state === "error" ? "text-red-600" : "text-ink-muted"}>{message}</p>
+        {state === "success" && nextSend ? <p className="text-ink-muted mt-2">{nextSend}</p> : null}
         <a href="/" className="inline-flex mt-6 text-primary font-medium hover:underline">
           Terug naar RenteOverzicht
         </a>

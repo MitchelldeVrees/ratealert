@@ -106,12 +106,12 @@ export default function Page() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Er ging iets mis");
       }
       setStatus("success");
-      setMessage("Check je mail en bevestig je inschrijving (kan 1-2 min duren).");
+      setMessage(data.message || "Check je mail en bevestig je inschrijving (kan 1-2 min duren).");
       setEmail("");
     } catch (err) {
       setStatus("error");

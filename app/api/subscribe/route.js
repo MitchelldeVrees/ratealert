@@ -23,6 +23,26 @@ async function sendEmail({ to, subject, html }) {
   }
 }
 
+async function contactExists(email) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const audienceId = process.env.RESEND_AUDIENCE_ID;
+  if (!apiKey || !audienceId) {
+    throw new Error("Missing RESEND_API_KEY or RESEND_AUDIENCE_ID");
+  }
+  const res = await fetch(
+    `https://api.resend.com/audiences/${audienceId}/contacts?email=${encodeURIComponent(email)}`,
+    {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    }
+  );
+  if (!res.ok) {
+    return null;
+  }
+  const data = await res.json().catch(() => ({}));
+  const contacts = Array.isArray(data?.data) ? data.data : [];
+  return contacts.some((c) => String(c.email || "").toLowerCase() === email.toLowerCase());
+}
+
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const email = (body.email || "").trim();
@@ -35,10 +55,23 @@ export async function POST(request) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
-  const headers = request.headers;
-  const proto = headers.get("x-forwarded-proto") || "http";
-  const host = headers.get("x-forwarded-host") || headers.get("host");
-  const baseUrl = process.env.APP_BASE_URL || `${proto}://${host}`;
+  const baseUrl = process.env.APP_BASE_URL;
+  if (!baseUrl) {
+    return NextResponse.json({ error: "APP_BASE_URL ontbreekt" }, { status: 500 });
+  }
+
+  try {
+    const exists = await contactExists(email);
+    if (exists) {
+      return NextResponse.json({
+        ok: true,
+        message: "Dit e-mailadres staat al ingeschreven.",
+        already_subscribed: true,
+      });
+    }
+  } catch {
+    // If lookup fails, continue with the confirmation flow.
+  }
 
   const token = signToken({ email, exp: Date.now() + TOKEN_TTL_MS }, secret);
   const confirmUrl = `${baseUrl}/confirm?token=${encodeURIComponent(token)}`;
