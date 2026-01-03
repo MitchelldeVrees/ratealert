@@ -58,12 +58,12 @@ export async function GET(request) {
     return NextResponse.json({ error: "Missing token" }, { status: 400 });
   }
 
-  const secret = process.env.SIGNING_SECRET;
-  if (!secret) {
+  const signingSecret = process.env.SIGNING_SECRET;
+  if (!signingSecret) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
-  const payload = verifyToken(token, secret);
+  const payload = verifyToken(token, signingSecret);
   if (!payload || !payload.email) {
     return NextResponse.json({ error: "Ongeldige of verlopen token" }, { status: 400 });
   }
@@ -103,13 +103,12 @@ export async function GET(request) {
     timeZone: "Europe/Amsterdam",
   });
   const baseUrl = process.env.APP_BASE_URL;
-  const secret = process.env.SIGNING_SECRET;
-  if (!baseUrl || !secret) {
+  if (!baseUrl) {
     return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
   const unsubscribeToken = signToken(
     { email: payload.email, type: "unsubscribe", exp: Date.now() + 1000 * 60 * 60 * 24 * 30 },
-    secret
+    signingSecret
   );
   const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(unsubscribeToken)}`;
   const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
