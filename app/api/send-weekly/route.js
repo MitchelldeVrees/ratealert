@@ -66,7 +66,7 @@ function renderEmail({ rankings, checkedAt }) {
           <div style="display:flex;align-items:center;gap:10px">
             
             <div>
-              <div style="font-weight:700;font-size:18px">RateRadar · Top 5 spaarrentes</div>
+              <div style="font-weight:700;font-size:18px">RenteOverzicht · Top 5 spaarrentes</div>
               <div style="font-size:12px;color:#64748b">Gecheckt: ${checkedAt}</div>
             </div>
           </div>
@@ -151,7 +151,7 @@ export async function POST(request) {
   const errors = [];
   for (const contact of contacts) {
     try {
-      await sendEmail({ to: contact.email, subject: "RateRadar · Top 5 spaarrentes", html });
+      await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
       sent += 1;
     } catch (err) {
       errors.push({ email: contact.email, error: err.message || String(err) });

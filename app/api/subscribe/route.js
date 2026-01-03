@@ -45,7 +45,7 @@ export async function POST(request) {
 
   const html = `
     <div style="font-family:Inter,Arial,sans-serif;line-height:1.6;color:#0f172a">
-      <h2>Bevestig je inschrijving voor RateRadar</h2>
+      <h2>Bevestig je inschrijving voor RenteOverzicht</h2>
       <p>Klik op de knop hieronder om je e-mailadres te bevestigen.</p>
       <p style="margin:20px 0">
         <a href="${confirmUrl}" style="background:#1F7AE0;color:#fff;padding:12px 18px;border-radius:999px;text-decoration:none;display:inline-block">
@@ -58,7 +58,7 @@ export async function POST(request) {
   `;
 
   try {
-    await sendEmail({ to: email, subject: "Bevestig je inschrijving — RateRadar", html });
+    await sendEmail({ to: email, subject: "Bevestig je inschrijving — RenteOverzicht", html });
   } catch (err) {
     return NextResponse.json({ error: err.message || "Email send failed" }, { status: 502 });
   }

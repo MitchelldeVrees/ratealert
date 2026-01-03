@@ -35,7 +35,7 @@ export default function ConfirmPage({ searchParams }) {
         <h1 className="font-display text-2xl mb-2">Bevestiging</h1>
         <p className={state === "error" ? "text-red-600" : "text-ink-muted"}>{message}</p>
         <a href="/" className="inline-flex mt-6 text-primary font-medium hover:underline">
-          Terug naar RateRadar
+          Terug naar RenteOverzicht
         </a>
       </div>
     </main>

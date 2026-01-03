@@ -68,6 +68,5 @@ export async function GET(request) {
     top_n: topN,
     offers_parsed: offers.length,
     rankings,
-    source: "independer",
   });
 }

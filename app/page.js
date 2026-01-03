@@ -18,7 +18,7 @@ const features = [
 
 const trustBadges = [
   "EU depositogarantie tot €100.000 per bank/land",
-  "Data uit openbare bron (Independer/banken)",
+  "Data uit openbare bronnen",
   "Geen advies, alleen informatie",
   "HTTPS + privacy-first",
 ];
@@ -127,7 +127,7 @@ export default function Page() {
             <div className="h-9 w-9 rounded-lg bg-primary text-white font-display flex items-center justify-center text-lg shadow-card">
               RR
             </div>
-            <span className="font-display text-lg">RateRadar</span>
+            <span className="font-display text-lg">Rente overzicht</span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm text-ink-muted">
             <a href="#how">Hoe het werkt</a>
@@ -155,8 +155,11 @@ export default function Page() {
                 <span className="pill bg-white border border-border">EU depositogarantie</span>
               </div>
               <h1 className="font-display text-4xl sm:text-5xl leading-tight text-ink mb-4">
-                Altijd de beste spaarrente-deals, automatisch in je inbox.
+                RenteOverzicht – Beste spaarrentes in Europa, automatisch in je inbox
               </h1>
+              <div className="text-sm text-ink-muted mb-3">
+                Onafhankelijke rente-informatie. Geen advies. Wel de beste opties.
+              </div>
               <p className="text-lg text-ink-muted mb-6 max-w-2xl">
                 Elke week de Top 5 spaarrentes in Europa, inclusief promo’s en effectieve rente. Geen zoeken, geen rekenen.
               </p>
@@ -200,7 +203,7 @@ export default function Page() {
             >
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-sm font-semibold">RateRadar · {exampleEmail.week}</div>
+                  <div className="text-sm font-semibold">RenteOverzicht · {exampleEmail.week}</div>
                   <div className="text-xs text-ink-muted">{exampleEmail.timestamp}</div>
                 </div>
                 <span className="pill bg-bg-muted border border-border text-ink-muted text-xs">Info, geen advies</span>
@@ -297,7 +300,7 @@ export default function Page() {
                 <div className="text-4xl font-display text-ink">{(effectiveRate * 100).toFixed(2)}%</div>
                 <div className="text-sm text-ink-muted">op basis van recente deals</div>
               </div>
-              <div className="text-sm text-ink-muted mb-1">Verwachte rente met RateRadar</div>
+              <div className="text-sm text-ink-muted mb-1">Verwachte rente met RenteOverzicht</div>
               <div className="text-2xl font-semibold mb-2">{formatCurrency(projected)}</div>
               <div className="text-sm text-ink-muted mb-4">ING-rente (berekend): {formatCurrency(ingInterest)}</div>
               <div className="bg-bg-muted border border-border rounded-xl p-4 mb-4">
@@ -376,7 +379,7 @@ export default function Page() {
               ))}
             </div>
             <div className="mt-6 text-sm text-ink-muted">
-              RateRadar biedt informatie en vergelijking, geen persoonlijk financieel advies. Rentes kunnen wijzigen. Controleer
+              RenteOverzicht biedt informatie en vergelijking, geen persoonlijk financieel advies. Rentes kunnen wijzigen. Controleer
               voorwaarden bij de bank.
             </div>
           </div>
@@ -429,8 +432,11 @@ export default function Page() {
       </main>
 
       <footer className="border-t border-border py-6">
-        <div className="container-wide flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-ink-muted">
-          <div>© {new Date().getFullYear()} RateRadar. Alle rechten voorbehouden.</div>
+          <div className="container-wide flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-ink-muted">
+            <div>
+              © {new Date().getFullYear()} RenteOverzicht. RenteOverzicht.com is een onafhankelijk informatieplatform voor
+              spaarrentes in Europa.
+            </div>
           <div className="flex gap-4">
             <a href="#privacy">Privacy</a>
             <a href="#terms">Terms</a>

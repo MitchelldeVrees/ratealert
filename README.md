@@ -1,6 +1,6 @@
 # RateAlert on Vercel
 
-Next.js + Tailwind landing page for RateRadar plus serverless API that pulls Dutch savings-account offers from Independer, ranks them by interest earned, and returns JSON. Deployable to Vercel.
+Next.js + Tailwind landing page for RenteOverzicht plus serverless API that ranks savings-account offers by interest earned and returns JSON. Deployable to Vercel.
 
 ## Endpoints
 
@@ -39,7 +39,7 @@ Set these environment variables:
 - `RESEND_AUDIENCE_ID`
 - `RESEND_FROM_EMAIL`
 - `SIGNING_SECRET`
-- `APP_BASE_URL` (e.g. https://rateradar.app)
+- `APP_BASE_URL` (e.g. https://renteoverzicht.com)
 - `CRON_SECRET` (for weekly send endpoint)
 
 Flow:

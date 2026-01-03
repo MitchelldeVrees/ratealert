@@ -1,9 +1,9 @@
 import "../styles/globals.css";
 
 export const metadata = {
-  title: "RateRadar – Top 5 spaarrentes in Europa, wekelijks in je inbox",
+  title: "Beste spaarrente in Europa – wekelijkse Top 5 | RenteOverzicht",
   description:
-    "Elke week de Top 5 spaarrentes in Europa, inclusief promo en effectieve rente. Geen zoeken, geen rekenen.",
+    "Elke week automatisch de beste spaarrentes in je inbox. Inclusief promo’s, effectieve rente en alerts bij wijzigingen. Gratis tijdens beta.",
 };
 
 export default function RootLayout({ children }) {
