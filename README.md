@@ -41,6 +41,7 @@ Set these environment variables:
 - `SIGNING_SECRET`
 - `APP_BASE_URL` (e.g. https://renteoverzicht.com)
 - `CRON_SECRET` (for weekly send endpoint)
+- `NEXT_PUBLIC_GOOGLE_ADS_ID` (optional, default `AW-17849928635`)
 
 Flow:
 
