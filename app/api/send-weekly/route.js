@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { buildRankings, fetchOffers } from "../../../lib/ratealert";
 import { renderWeeklyEmail } from "../../../lib/weeklyEmail";
+import { signToken } from "../../../lib/optin";
 
 function requireAuth(request) {
   const secret = process.env.CRON_SECRET;
@@ -65,7 +66,11 @@ export async function POST(request) {
     timeStyle: "short",
     timeZone: "Europe/Amsterdam",
   });
-  const html = renderWeeklyEmail({ rankings, checkedAt });
+  const baseUrl = process.env.APP_BASE_URL;
+  const secret = process.env.SIGNING_SECRET;
+  if (!baseUrl || !secret) {
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
 
   let contacts;
   try {
@@ -78,6 +83,12 @@ export async function POST(request) {
   const errors = [];
   for (const contact of contacts) {
     try {
+      const token = signToken(
+        { email: contact.email, type: "unsubscribe", exp: Date.now() + 1000 * 60 * 60 * 24 * 30 },
+        secret
+      );
+      const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
+      const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
       await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
       sent += 1;
     } catch (err) {

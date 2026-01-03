@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { buildRankings, fetchOffers } from "../../../lib/ratealert";
-import { verifyToken } from "../../../lib/optin";
+import { signToken, verifyToken } from "../../../lib/optin";
 import { renderWeeklyEmail } from "../../../lib/weeklyEmail";
 
 async function addToAudience(email) {
@@ -102,7 +102,17 @@ export async function GET(request) {
     timeStyle: "short",
     timeZone: "Europe/Amsterdam",
   });
-  const html = renderWeeklyEmail({ rankings, checkedAt });
+  const baseUrl = process.env.APP_BASE_URL;
+  const secret = process.env.SIGNING_SECRET;
+  if (!baseUrl || !secret) {
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+  const token = signToken(
+    { email: payload.email, type: "unsubscribe", exp: Date.now() + 1000 * 60 * 60 * 24 * 30 },
+    secret
+  );
+  const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
+  const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
 
   try {
     await sendEmail({
@@ -118,6 +128,6 @@ export async function GET(request) {
     ok: true,
     email: payload.email,
     first_weekly_sent: true,
-    next_send: "Je volgende Top 5 ontvang je elke vrijdag.",
+    next_send: "We hebben je nu alvast een email gestuurd met de beste rente. Volgende keer ontvang je deze email elke vrijdag middag.",
   });
 }
