@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const steps = [
   { title: "Meld je aan", copy: "Laat je e-mail achter en kies je voorkeuren." },
@@ -57,6 +58,7 @@ const formatCurrency = (value) =>
   value.toLocaleString("nl-NL", { style: "currency", currency: "EUR", maximumFractionDigits: 0 });
 
 export default function Page() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [message, setMessage] = useState("");
@@ -113,6 +115,7 @@ export default function Page() {
       setStatus("success");
       setMessage(data.message || "Check je mail en bevestig je inschrijving (kan 1-2 min duren).");
       setEmail("");
+      router.push("/bedankt");
     } catch (err) {
       setStatus("error");
       setMessage(err.message || "Er ging iets mis");
