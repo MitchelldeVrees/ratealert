@@ -50,8 +50,7 @@ export default function ConsentBanner({ googleAdsId }) {
       <div className="container-wide">
         <div className="card p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-3">
           <div className="text-sm text-ink-muted">
-            We gebruiken cookies/metingen om conversies te meten (Google Tag {googleAdsId}). Geen toestemming = geen
-            advertentiepersonalisatie.
+            We gebruiken cookies om data te meten. Door op "Akkoord" te klikken, stemt u in met het gebruik van deze cookies.
           </div>
           <div className="flex gap-2 sm:ml-auto">
             <button

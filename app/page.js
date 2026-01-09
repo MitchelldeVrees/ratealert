@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const steps = [
@@ -35,7 +35,7 @@ const faqs = [
   { q: "Zijn buitenlandse banken veilig?", a: "EU depositogarantie tot €100.000 per bank/land. Check ook looptijden en voorwaarden." },
   { q: "Hoe vaak mailen jullie?", a: "1x per week de Top 5 + alerts bij rente-wijzigingen." },
   { q: "Kan ik me afmelden?", a: "Ja, in elke e-mail staat 1-klik opzeggen." },
-  { q: "Wat kost het?", a: "Gratis. We verdienen geld met reclames tonen en affiliate links" },
+  { q: "Wat kost het?", a: "Gratis tijdens beta. Later premium opties voor alerts/filters." },
 ];
 
 const exampleEmail = {
@@ -65,6 +65,11 @@ export default function Page() {
   const [amount, setAmount] = useState(50000);
   const [horizon, setHorizon] = useState(6);
   const [showModal, setShowModal] = useState(false);
+  const modalInputRef = useRef(null);
+  const checkedAtLabel = useMemo(
+    () => new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "long" }).format(new Date()),
+    []
+  );
 
   const effectiveRate = useMemo(() => {
     if (horizon <= 3) return 0.0275;
@@ -115,12 +120,23 @@ export default function Page() {
       setStatus("success");
       setMessage(data.message || "Check je mail en bevestig je inschrijving (kan 1-2 min duren).");
       setEmail("");
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({ event: "lead_submit" });
+      }
       router.push("/bedankt");
     } catch (err) {
       setStatus("error");
       setMessage(err.message || "Er ging iets mis");
     }
   };
+
+  useEffect(() => {
+    if (!showModal) return;
+    const focusInput = () => modalInputRef.current?.focus();
+    const id = window.requestAnimationFrame(focusInput);
+    return () => window.cancelAnimationFrame(id);
+  }, [showModal]);
 
   return (
     <div className="min-h-screen bg-white text-ink">
@@ -153,39 +169,30 @@ export default function Page() {
           <div className="container-wide grid gap-10 lg:grid-cols-2 items-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}>
               <div className="flex flex-wrap gap-2 items-center text-xs text-ink-muted mb-3">
-                <span className="pill bg-white border border-border">Laatst gecheckt: 2 min geleden</span>
+                <span className="pill bg-white border border-border" title={`Laatst gecheckt: ${checkedAtLabel}`}>
+                  Laatst gecheckt: vandaag
+                </span>
                 <span className="pill bg-white border border-border">Geen spam</span>
                 <span className="pill bg-white border border-border">EU depositogarantie</span>
               </div>
-              <h1 className="font-display text-4xl sm:text-5xl leading-tight text-ink mb-4">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl leading-tight text-ink mb-4">
                 RenteOverzicht – Beste spaarrentes in Europa, automatisch in je inbox
               </h1>
               <div className="text-sm text-ink-muted mb-3">
                 Onafhankelijke rente-informatie. Geen advies. Wel de beste opties.
               </div>
-              <p className="text-lg text-ink-muted mb-6 max-w-2xl">
+              <p className="text-base sm:text-lg text-ink-muted mb-6 max-w-2xl">
                 Elke week de Top 5 spaarrentes in Europa, inclusief promo’s en effectieve rente. Geen zoeken, geen rekenen.
               </p>
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-3" id="cta">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jij@voorbeeld.nl"
-                  className="flex-1 px-4 py-3 rounded-xl border border-border focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition disabled:opacity-70"
-                >
-                  {status === "loading" ? "Versturen..." : "Ontvang de Top 5 rentes"}
-                </button>
-              </form>
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition"
+                id="cta"
+              >
+                Ontvang de Top 5 rentes
+              </button>
               <div className="text-sm text-ink-muted mb-4">Geen spam. 1x per week. Opzeggen met 1 klik.</div>
-              {status === "success" && <div className="text-sm text-green-600 mb-2">{message}</div>}
-              {status === "error" && <div className="text-sm text-red-600 mb-2">{message}</div>}
               <div className="flex items-center gap-3 text-sm text-ink">
                 <div className="font-semibold">1.284 spaarders ingeschreven*</div>
                 <div className="text-ink-muted text-xs">*Indicatief, live teller.</div>
@@ -234,7 +241,7 @@ export default function Page() {
 
         <section className="section" id="how">
           <div className="container-wide">
-            <h2 className="font-display text-3xl mb-3">Zo werkt het</h2>
+            <h2 className="font-display text-2xl sm:text-3xl mb-3">Zo werkt het</h2>
             <p className="text-ink-muted mb-8">In 3 stappen elke week de beste spaarrentes in je inbox.</p>
             <div className="grid gap-4 md:grid-cols-3">
               {steps.map((step, idx) => (
@@ -253,7 +260,7 @@ export default function Page() {
         <section className="section bg-bg-muted" id="why">
           <div className="container-wide grid gap-10 lg:grid-cols-2 items-center">
             <div>
-              <h2 className="font-display text-3xl mb-3">Waarom dit je geld oplevert</h2>
+              <h2 className="font-display text-2xl sm:text-3xl mb-3">Waarom dit je geld oplevert</h2>
               <p className="text-ink-muted mb-6">
                 Kies een bedrag en horizon. We tonen de effectieve rente én het verschil met de huisbank (0,5%).
               </p>
@@ -270,7 +277,7 @@ export default function Page() {
                   </button>
                 ))}
               </div>
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center">
                 <span className="text-sm text-ink-muted">Bedrag:</span>
                 <input
                   type="range"
@@ -279,11 +286,11 @@ export default function Page() {
                   step="5000"
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
-                  className="w-full accent-primary"
+                  className="w-full accent-primary sm:flex-1"
                 />
                 <span className="text-sm font-semibold">{formatCurrency(amount)}</span>
               </div>
-              <div className="flex gap-2 mb-6">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {horizonPresets.map((h) => (
                   <button
                     key={h}
@@ -300,7 +307,7 @@ export default function Page() {
             <div className="card p-6">
               <div className="text-sm text-ink-muted mb-2">Effectieve rente-inschatting</div>
               <div className="flex items-baseline gap-3 mb-4">
-                <div className="text-4xl font-display text-ink">{(effectiveRate * 100).toFixed(2)}%</div>
+                <div className="text-3xl sm:text-4xl font-display text-ink">{(effectiveRate * 100).toFixed(2)}%</div>
                 <div className="text-sm text-ink-muted">op basis van recente deals</div>
               </div>
               <div className="text-sm text-ink-muted mb-1">Verwachte rente met RenteOverzicht</div>
@@ -310,7 +317,11 @@ export default function Page() {
                 <div className="text-sm text-ink-muted">Extra opbrengst t.o.v. ING</div>
                 <div className="text-xl font-semibold text-ink">{formatCurrency(uplift)}</div>
               </div>
-              <button className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-medium shadow-card transition">
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-medium shadow-card transition"
+              >
                 Stuur mij de deals
               </button>
               <div className="text-xs text-ink-muted mt-3">
@@ -322,7 +333,7 @@ export default function Page() {
 
         <section className="section" id="features">
           <div className="container-wide">
-            <h2 className="font-display text-3xl mb-3">Top features</h2>
+            <h2 className="font-display text-2xl sm:text-3xl mb-3">Top features</h2>
             <p className="text-ink-muted mb-8">Gebouwd om sneller en slimmer rente te kiezen.</p>
             <div className="grid gap-4 md:grid-cols-2">
               {features.map((feat) => (
@@ -338,7 +349,7 @@ export default function Page() {
         <section className="section bg-bg-muted" id="trust">
           <div className="container-wide grid gap-8 lg:grid-cols-2 items-start">
             <div>
-              <h2 className="font-display text-3xl mb-3">Vertrouwen & veiligheid</h2>
+              <h2 className="font-display text-2xl sm:text-3xl mb-3">Vertrouwen & veiligheid</h2>
               <p className="text-ink-muted mb-4">
                 Informatie en vergelijking, geen advies. We hanteren EU depositogarantie-informatie en beschermen je data.
               </p>
@@ -356,7 +367,7 @@ export default function Page() {
 
         <section className="section" id="testimonials">
           <div className="container-wide">
-            <h2 className="font-display text-3xl mb-3">Wat anderen zeggen</h2>
+            <h2 className="font-display text-2xl sm:text-3xl mb-3">Wat anderen zeggen</h2>
             <p className="text-ink-muted mb-8">Echte bezwaren, kort en eerlijk beantwoord.</p>
             <div className="grid gap-4 md:grid-cols-3">
               {testimonials.map((t) => (
@@ -371,7 +382,7 @@ export default function Page() {
 
         <section className="section bg-bg-muted" id="faq">
           <div className="container-wide">
-            <h2 className="font-display text-3xl mb-3">FAQ & disclaimer</h2>
+            <h2 className="font-display text-2xl sm:text-3xl mb-3">FAQ & disclaimer</h2>
             <p className="text-ink-muted mb-6">Veelgestelde vragen en duidelijke disclaimers.</p>
             <div className="space-y-3">
               {faqs.map((item, idx) => (
@@ -391,32 +402,20 @@ export default function Page() {
         <section className="section" id="final-cta">
           <div className="container-wide grid gap-8 lg:grid-cols-2 items-center">
             <div>
-              <h2 className="font-display text-3xl mb-3">Krijg de Top 5 in je inbox</h2>
+              <h2 className="font-display text-2xl sm:text-3xl mb-3">Krijg de Top 5 in je inbox</h2>
               <p className="text-ink-muted mb-4">Gratis tijdens beta. Kost 30 seconden. Afmelden wanneer je wil.</p>
               <div className="flex items-center gap-2 text-sm text-ink-muted mb-2">
                 <span className="pill bg-bg-muted border border-border">Geen spam</span>
                 <span className="pill bg-bg-muted border border-border">1x per week</span>
                 <span className="pill bg-bg-muted border border-border">EU depositogarantie info</span>
               </div>
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 mb-2">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jij@voorbeeld.nl"
-                  className="flex-1 px-4 py-3 rounded-xl border border-border focus:ring-2 focus:ring-primary focus:outline-none"
-                />
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition disabled:opacity-70"
-                >
-                  {status === "loading" ? "Versturen..." : "Ontvang de Top 5 rentes"}
-                </button>
-              </form>
-              {status === "success" && <div className="text-sm text-green-600 mb-1">{message}</div>}
-              {status === "error" && <div className="text-sm text-red-600 mb-1">{message}</div>}
+              <button
+                type="button"
+                onClick={() => setShowModal(true)}
+                className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition"
+              >
+                Ontvang de Top 5 rentes
+              </button>
               <a href="#email-preview" className="text-primary text-sm font-medium hover:underline">
                 Bekijk voorbeeld e-mail
               </a>
@@ -428,7 +427,9 @@ export default function Page() {
                 <li>• Geen advies, alleen informatie</li>
                 <li>• Afmelden in 1 klik</li>
               </ul>
-              <div className="mt-4 text-sm text-ink-muted">Gratis. We verdienen geld met reclames tonen en affiliate links</div>
+              <div className="mt-4 text-sm text-ink-muted">
+                We kunnen commissie ontvangen als je via een link een rekening opent.
+              </div>
             </div>
           </div>
         </section>
@@ -476,6 +477,7 @@ export default function Page() {
               <input
                 type="email"
                 required
+                ref={modalInputRef}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="jij@voorbeeld.nl"

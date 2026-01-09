@@ -4,9 +4,17 @@ import Script from "next/script";
 import ConsentBanner from "./components/ConsentBanner";
 
 export const metadata = {
-  title: "Beste spaarrente in Europa – wekelijkse Top 5 | RenteOverzicht",
+  title: "RenteOverzicht – Beste spaarrentes (NL + EU) elke week in je inbox",
   description:
-    "Elke week automatisch de beste spaarrentes in je inbox. Inclusief promo’s, effectieve rente en alerts bij wijzigingen. Gratis tijdens beta.",
+    "Ontvang elke week de Top 5 spaarrentes, inclusief promo’s en effectieve rente. Gratis tijdens beta. Geen spam, afmelden met 1 klik.",
+  alternates: {
+    canonical: "https://renteoverzicht.com/",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
