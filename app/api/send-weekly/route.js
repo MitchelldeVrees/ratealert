@@ -71,7 +71,9 @@ async function sendEmail({ to, subject, html }) {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    throw new Error(data?.message || "Email send failed");
+    const err = new Error(data?.message || "Email send failed");
+    err.status = res.status;
+    throw err;
   }
 }
 
@@ -111,7 +113,7 @@ export async function POST(request) {
 
   let sent = 0;
   const errors = [];
-  const throttleMs = 600;
+  const throttleMs = 1100;
   for (const contact of contacts) {
     try {
       const token = signToken(
@@ -120,7 +122,16 @@ export async function POST(request) {
       );
       const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${encodeURIComponent(token)}`;
       const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
-      await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
+      try {
+        await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
+      } catch (err) {
+        if (err.status === 429) {
+          await sleep(throttleMs);
+          await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
+        } else {
+          throw err;
+        }
+      }
       sent += 1;
       await sleep(throttleMs);
     } catch (err) {
