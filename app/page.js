@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const steps = [
   { title: "Meld je aan", copy: "Laat je e-mail achter en kies je voorkeuren." },
@@ -124,7 +125,9 @@ export default function Page() {
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({ event: "lead_submit" });
       }
-      router.push("/bedankt");
+      if (!data.already_subscribed) {
+        router.push("/bedankt");
+      }
     } catch (err) {
       setStatus("error");
       setMessage(err.message || "Er ging iets mis");
@@ -143,8 +146,8 @@ export default function Page() {
       <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b border-border">
         <div className="container-wide flex items-center justify-between py-3">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-primary text-white font-display flex items-center justify-center text-lg shadow-card">
-              RR
+            <div className="h-9 w-9 rounded-lg bg-white shadow-card flex items-center justify-center border border-border">
+              <Image src="/smallLogo.jpg" alt="RenteOverzicht logo" width={28} height={28} priority />
             </div>
             <span className="font-display text-lg">Rente overzicht</span>
           </div>

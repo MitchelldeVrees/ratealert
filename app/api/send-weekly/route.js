@@ -16,15 +16,43 @@ async function listContacts() {
   if (!apiKey || !audienceId) {
     throw new Error("Missing RESEND_API_KEY or RESEND_AUDIENCE_ID");
   }
-  const res = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts?limit=100`, {
-    headers: { Authorization: `Bearer ${apiKey}` },
-  });
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data?.message || "Failed to list contacts");
+  const all = [];
+  let after = null;
+  let safety = 0;
+
+  while (true) {
+    const url =
+      `https://api.resend.com/audiences/${audienceId}/contacts?limit=100` +
+      (after ? `&after=${encodeURIComponent(after)}` : "");
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data?.message || "Failed to list contacts");
+    }
+    const data = await res.json();
+    const batch = Array.isArray(data?.data) ? data.data : [];
+    all.push(...batch);
+
+    const next =
+      data?.next ||
+      data?.after ||
+      data?.cursor ||
+      data?.pagination?.next ||
+      data?.pagination?.after ||
+      null;
+    const hasMore = data?.has_more ?? data?.pagination?.has_more;
+
+    if (!next || hasMore === false || batch.length === 0 || next === after) {
+      break;
+    }
+    after = next;
+    safety += 1;
+    if (safety > 100) break;
   }
-  const data = await res.json();
-  return Array.isArray(data?.data) ? data.data : [];
+
+  return all;
 }
 
 async function sendEmail({ to, subject, html }) {
@@ -46,6 +74,8 @@ async function sendEmail({ to, subject, html }) {
     throw new Error(data?.message || "Email send failed");
   }
 }
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export async function POST(request) {
   if (!requireAuth(request)) {
@@ -81,6 +111,7 @@ export async function POST(request) {
 
   let sent = 0;
   const errors = [];
+  const throttleMs = 600;
   for (const contact of contacts) {
     try {
       const token = signToken(
@@ -91,8 +122,10 @@ export async function POST(request) {
       const html = renderWeeklyEmail({ rankings, checkedAt, unsubscribeUrl });
       await sendEmail({ to: contact.email, subject: "RenteOverzicht · Top 5 spaarrentes", html });
       sent += 1;
+      await sleep(throttleMs);
     } catch (err) {
       errors.push({ email: contact.email, error: err.message || String(err) });
+      await sleep(throttleMs);
     }
   }
 

@@ -10,6 +10,11 @@ export const metadata = {
   alternates: {
     canonical: "https://renteoverzicht.com/",
   },
+  icons: {
+    icon: "/smallLogo.jpg",
+    shortcut: "/smallLogo.jpg",
+    apple: "/smallLogo.jpg",
+  },
 };
 
 export const viewport = {
