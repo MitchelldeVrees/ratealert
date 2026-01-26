@@ -40,16 +40,7 @@ const faqs = [
 ];
 
 const exampleEmail = {
-  week: "Week 12",
-  timestamp: "Gecheckt: vandaag 09:05",
-  subject: "Top 5 spaarrentes • incl. promo en effectieve rente",
-  items: [
-    "Santander ES – 3,10% promo 3m → eff. 2,85%",
-    "Renault Bank FR – 2,95% eff.",
-    "Bunq NL – 2,55% eff. (vrij opneembaar)",
-    "N26 DE – 2,40% eff.",
-    "LeasePlan BE – 2,35% eff.",
-  ],
+  subject: "Top 5 spaarrentes - incl. promo en effectieve rente",
 };
 
 const presetAmounts = [10000, 50000, 200000];
@@ -63,10 +54,31 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | loading | success | error
   const [message, setMessage] = useState("");
+  const [topOffers, setTopOffers] = useState([]);
+  const [topOffersError, setTopOffersError] = useState("");
   const [amount, setAmount] = useState(50000);
   const [horizon, setHorizon] = useState(6);
   const [showModal, setShowModal] = useState(false);
   const modalInputRef = useRef(null);
+  const weekNumber = useMemo(() => {
+    const date = new Date();
+    const day = (date.getDay() + 6) % 7;
+    const thursday = new Date(date);
+    thursday.setDate(date.getDate() - day + 3);
+    const firstThursday = new Date(thursday.getFullYear(), 0, 4);
+    const firstDay = (firstThursday.getDay() + 6) % 7;
+    firstThursday.setDate(firstThursday.getDate() - firstDay + 3);
+    const week = 1 + Math.round((thursday - firstThursday) / 604800000);
+    return week;
+  }, []);
+  const previewTimestamp = useMemo(() => {
+    const label = new Intl.DateTimeFormat("nl-NL", {
+      weekday: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date());
+    return `Gecheckt: ${label}`;
+  }, []);
   const checkedAtLabel = useMemo(
     () => new Intl.DateTimeFormat("nl-NL", { day: "numeric", month: "long" }).format(new Date()),
     []
@@ -119,7 +131,9 @@ export default function Page() {
         throw new Error(data.error || "Er ging iets mis");
       }
       setStatus("success");
-      setMessage(data.message || "Check je mail en bevestig je inschrijving (kan 1-2 min duren).");
+      setMessage(
+        data.message || "Check je inbox (en spam/promoties) en klik op de bevestigingslink. Zoek op ‘RenteOverzicht’."
+      );
       setEmail("");
       if (typeof window !== "undefined") {
         window.dataLayer = window.dataLayer || [];
@@ -140,6 +154,32 @@ export default function Page() {
     const id = window.requestAnimationFrame(focusInput);
     return () => window.cancelAnimationFrame(id);
   }, [showModal]);
+
+  useEffect(() => {
+    let alive = true;
+    const load = async () => {
+      try {
+        const res = await fetch("/api/ratealert?principal=100000&horizons=180&top_n=5");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data?.error || "Kon spaarrentes niet laden");
+        const rows = data?.rankings?.[180] || [];
+        if (alive) {
+          setTopOffers(
+            rows.map((row) => ({
+              name: row.offer?.name || "Onbekende bank",
+              rate: row.results?.effective_annual_rate ?? null,
+            }))
+          );
+        }
+      } catch (err) {
+        if (alive) setTopOffersError(err.message || "Kon spaarrentes niet laden");
+      }
+    };
+    load();
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-white text-ink">
@@ -162,7 +202,7 @@ export default function Page() {
             onClick={() => setShowModal(true)}
             className="hidden sm:inline-flex bg-primary text-white px-4 py-2 rounded-pill text-sm font-medium hover:bg-primary-hover transition"
           >
-            Ontvang de Top 5 rentes
+            Ontvang elke vrijdag de hoogste spaarrentes
           </button>
         </div>
       </header>
@@ -193,7 +233,7 @@ export default function Page() {
                 className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition"
                 id="cta"
               >
-                Ontvang de Top 5 rentes
+                Ontvang elke vrijdag de hoogste spaarrentes
               </button>
               <div className="text-sm text-ink-muted mb-4">Geen spam. 1x per week. Opzeggen met 1 klik.</div>
               <div className="flex items-center gap-3 text-sm text-ink">
@@ -216,25 +256,38 @@ export default function Page() {
             >
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <div className="text-sm font-semibold">RenteOverzicht · {exampleEmail.week}</div>
-                  <div className="text-xs text-ink-muted">{exampleEmail.timestamp}</div>
+                  <div className="text-sm font-semibold">RenteOverzicht - Week {weekNumber}</div>
+                  <div className="text-xs text-ink-muted">{previewTimestamp}</div>
                 </div>
                 <span className="pill bg-bg-muted border border-border text-ink-muted text-xs">Info, geen advies</span>
               </div>
               <div className="font-medium mb-3 text-ink">{exampleEmail.subject}</div>
               <ol className="space-y-2 text-sm text-ink">
-                {exampleEmail.items.slice(0, 3).map((item, idx) => (
-                  <li key={idx} className="flex gap-2">
-                    <span className="text-ink-muted">{idx + 1}.</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
+                {topOffers.length > 0 &&
+                  topOffers.slice(0, 5).map((item, idx) => (
+                    <li key={`${item.name}-${idx}`} className="flex gap-2 items-start">
+                      <span className="text-ink-muted">{idx + 1}.</span>
+                      {idx < 2 ? (
+                        <span className="block" aria-hidden="true">
+                          <span
+                            className={`h-3 rounded-full bg-ink/10 blur-sm inline-block ${
+                              idx === 0 ? "w-56" : "w-40"
+                            }`}
+                          />
+                        </span>
+                      ) : (
+                        <span>
+                          {item.name}
+                          {typeof item.rate === "number" && ` - ${(item.rate * 100).toFixed(2)}% eff.`}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                {topOffers.length === 0 && !topOffersError && (
+                  <li className="text-ink-muted">Spaarrentes laden...</li>
+                )}
+                {topOffersError && <li className="text-ink-muted">{topOffersError}</li>}
               </ol>
-              <div className="mt-4">
-                <a href="#features" className="text-primary text-sm font-medium hover:underline">
-                  Bekijk volledige vergelijking
-                </a>
-              </div>
               <div className="mt-4 text-xs text-ink-muted">
                 EU depositogarantie tot €100.000 per bank/land · Geen advies, alleen info
               </div>
@@ -325,7 +378,7 @@ export default function Page() {
                 onClick={() => setShowModal(true)}
                 className="w-full bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-medium shadow-card transition"
               >
-                Stuur mij de deals
+                Laat banken voor mij concurreren
               </button>
               <div className="text-xs text-ink-muted mt-3">
                 Indicatief voorbeeld, geen advies. Promo’s worden omgerekend naar effectieve rente.
@@ -405,7 +458,7 @@ export default function Page() {
         <section className="section" id="final-cta">
           <div className="container-wide grid gap-8 lg:grid-cols-2 items-center">
             <div>
-              <h2 className="font-display text-2xl sm:text-3xl mb-3">Krijg de Top 5 in je inbox</h2>
+              <h2 className="font-display text-2xl sm:text-3xl mb-3">Mis nooit meer een renteverhoging</h2>
               <p className="text-ink-muted mb-4">Gratis tijdens beta. Kost 30 seconden. Afmelden wanneer je wil.</p>
               <div className="flex items-center gap-2 text-sm text-ink-muted mb-2">
                 <span className="pill bg-bg-muted border border-border">Geen spam</span>
@@ -417,7 +470,7 @@ export default function Page() {
                 onClick={() => setShowModal(true)}
                 className="w-full sm:w-auto bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition"
               >
-                Ontvang de Top 5 rentes
+                Ontvang elke vrijdag de hoogste spaarrentes
               </button>
               <a href="#email-preview" className="text-primary text-sm font-medium hover:underline">
                 Bekijk voorbeeld e-mail
@@ -457,7 +510,7 @@ export default function Page() {
           className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Ontvang de Top 5 rentes"
+          aria-label="Ontvang elke vrijdag de hoogste spaarrentes"
           onClick={() => setShowModal(false)}
         >
           <div
@@ -472,7 +525,7 @@ export default function Page() {
             >
               ✕
             </button>
-            <h3 className="font-display text-2xl mb-2 text-ink">Ontvang de Top 5 rentes</h3>
+            <h3 className="font-display text-2xl mb-2 text-ink">Ontvang elke vrijdag de hoogste spaarrentes</h3>
             <p className="text-ink-muted text-sm mb-4">
               Geen spam. 1x per week. Opzeggen met 1 klik.
             </p>
@@ -491,7 +544,7 @@ export default function Page() {
                 disabled={status === "loading"}
                 className="bg-primary hover:bg-primary-hover text-white px-5 py-3 rounded-xl font-medium shadow-card transition disabled:opacity-70"
               >
-                {status === "loading" ? "Versturen..." : "Ontvang de Top 5 rentes"}
+                {status === "loading" ? "Versturen..." : "Ontvang elke vrijdag de hoogste spaarrentes"}
               </button>
             </form>
             {status === "success" && <div className="text-sm text-green-600 mb-1">{message}</div>}

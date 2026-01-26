@@ -36,6 +36,10 @@ async function contactExists(email) {
     }
   );
   if (!res.ok) {
+    console.error("Resend contact lookup failed", {
+      status: res.status,
+      email,
+    });
     return null;
   }
   const data = await res.json().catch(() => ({}));
@@ -59,6 +63,7 @@ export async function POST(request) {
   if (!baseUrl) {
     return NextResponse.json({ error: "APP_BASE_URL ontbreekt" }, { status: 500 });
   }
+  const cleanBaseUrl = baseUrl.replace(/\/$/, "");
 
   try {
     const exists = await contactExists(email);
@@ -69,12 +74,13 @@ export async function POST(request) {
         already_subscribed: true,
       });
     }
-  } catch {
+  } catch (err) {
+    console.error("Resend contact lookup error", { email, error: err?.message || String(err) });
     // If lookup fails, continue with the confirmation flow.
   }
 
   const token = signToken({ email, exp: Date.now() + TOKEN_TTL_MS }, secret);
-  const confirmUrl = `${baseUrl}/confirm?token=${encodeURIComponent(token)}`;
+  const confirmUrl = `${cleanBaseUrl}/confirm?token=${encodeURIComponent(token)}`;
 
   const html = `
     <div style="font-family:Inter,Arial,sans-serif;line-height:1.6;color:#0f172a">
@@ -96,7 +102,11 @@ export async function POST(request) {
     return NextResponse.json({ error: err.message || "Email send failed" }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true, message: "Check je inbox om te bevestigen.", double_opt_in: true });
+  return NextResponse.json({
+    ok: true,
+    message: "Check je inbox (en spam/promoties) en klik op de bevestigingslink.",
+    double_opt_in: true,
+  });
 }
 
 export function GET() {

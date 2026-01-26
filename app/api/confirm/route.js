@@ -19,8 +19,9 @@ async function addToAudience(email) {
   });
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
-    const msg = data?.message || "Contact add failed";
-    if (msg.includes("already exists")) return;
+    const msg = String(data?.message || "Contact add failed");
+    const normalized = msg.toLowerCase();
+    if (normalized.includes("already") && normalized.includes("exist")) return;
     throw new Error(msg);
   }
 }
@@ -55,44 +56,32 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const token = searchParams.get("token");
   if (!token) {
-    return NextResponse.json({ error: "Missing token" }, { status: 400 });
+    return NextResponse.redirect(new URL("/bevestigd?status=missing", request.url));
   }
 
   const signingSecret = process.env.SIGNING_SECRET;
   if (!signingSecret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    return NextResponse.redirect(new URL("/bevestigd?status=error", request.url));
   }
 
   const payload = verifyToken(token, signingSecret);
   if (!payload || !payload.email) {
-    return NextResponse.json({ error: "Ongeldige of verlopen token" }, { status: 400 });
+    return NextResponse.redirect(new URL("/bevestigd?status=invalid", request.url));
   }
 
   try {
     await addToAudience(payload.email);
   } catch (err) {
-    return NextResponse.json({ error: err.message || "Confirm failed" }, { status: 502 });
+    return NextResponse.redirect(new URL("/bevestigd?status=error", request.url));
   }
 
-  const weekday = getAmsterdamWeekday();
-  if (weekday === "friday") {
-    return NextResponse.json({
-      ok: true,
-      email: payload.email,
-      first_weekly_sent: false,
-      next_send:
-        "Het is vrijdag. Je eerste Top 5 ontvang je vanmiddag. Daarna elke vrijdag.",
-    });
-  }
+  getAmsterdamWeekday();
 
   let offers;
   try {
     offers = await fetchOffers();
   } catch (err) {
-    return NextResponse.json(
-      { error: "Upstream fetch failed", detail: err.message || String(err) },
-      { status: 502 }
-    );
+    return NextResponse.redirect(new URL("/bevestigd?status=error", request.url));
   }
 
   const horizons = [90, 180, 365];
@@ -104,7 +93,7 @@ export async function GET(request) {
   });
   const baseUrl = process.env.APP_BASE_URL;
   if (!baseUrl) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    return NextResponse.redirect(new URL("/bevestigd?status=error", request.url));
   }
   const unsubscribeToken = signToken(
     { email: payload.email, type: "unsubscribe", exp: Date.now() + 1000 * 60 * 60 * 24 * 30 },
@@ -120,13 +109,8 @@ export async function GET(request) {
       html,
     });
   } catch (err) {
-    return NextResponse.json({ error: err.message || "Email send failed" }, { status: 502 });
+    return NextResponse.redirect(new URL("/bevestigd?status=error", request.url));
   }
 
-  return NextResponse.json({
-    ok: true,
-    email: payload.email,
-    first_weekly_sent: true,
-    next_send: "We hebben je nu alvast een email gestuurd met de beste rente. Volgende keer ontvang je deze email elke vrijdag middag.",
-  });
+  return NextResponse.redirect(new URL("/bevestigd?status=sent", request.url));
 }
