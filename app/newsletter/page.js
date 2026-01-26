@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { renderWeeklyEmail } from "../../lib/weeklyEmail";
 
 export default function NewsletterPage() {
@@ -9,6 +9,34 @@ export default function NewsletterPage() {
   const [message, setMessage] = useState("");
   const [lastSubmittedEmail, setLastSubmittedEmail] = useState("");
   const [canResend, setCanResend] = useState(true);
+
+  const pushDataLayer = (event, payload = {}) => {
+    if (typeof window === "undefined") return;
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event, ...payload });
+  };
+
+  const getUtmParams = () => {
+    if (typeof window === "undefined") return {};
+    const params = new URLSearchParams(window.location.search);
+    return {
+      utm_source: params.get("utm_source") || undefined,
+      utm_medium: params.get("utm_medium") || undefined,
+      utm_campaign: params.get("utm_campaign") || undefined,
+      utm_term: params.get("utm_term") || undefined,
+      utm_content: params.get("utm_content") || undefined,
+    };
+  };
+
+  const getEmailDomain = (value) => {
+    const at = value.lastIndexOf("@");
+    if (at === -1 || at === value.length - 1) return undefined;
+    return value.slice(at + 1).toLowerCase();
+  };
+
+  useEffect(() => {
+    pushDataLayer("newsletter_view", { page: "/newsletter", ...getUtmParams() });
+  }, []);
 
   const checkedAt = useMemo(() => {
     return new Intl.DateTimeFormat("nl-NL", {
@@ -92,16 +120,29 @@ export default function NewsletterPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
+        pushDataLayer("newsletter_subscribe_fail", {
+          page: "/newsletter",
+          error_code: data?.code || "unknown",
+          ...getUtmParams(),
+        });
         throw new Error(data.error || "Er ging iets mis");
       }
       setStatus("success");
       setMessage(
-        data.message || "Check je inbox (en spam/promoties) en klik op de bevestigingslink. Zoek op ‘RenteOverzicht’."
+        data.message || "Check je inbox (en spam/promoties) en klik op de bevestigingslink. Zoek op â€˜RenteOverzichtâ€™."
       );
       setLastSubmittedEmail(targetEmail);
       setEmail(targetEmail);
       setCanResend(false);
       window.setTimeout(() => setCanResend(true), 60000);
+
+      pushDataLayer("newsletter_subscribe_ok", {
+        page: "/newsletter",
+        already_subscribed: Boolean(data?.already_subscribed),
+        email_domain: getEmailDomain(targetEmail),
+        ...getUtmParams(),
+      });
+
       if (typeof window !== "undefined") {
         window.dataLayer = window.dataLayer || [];
         const params = new URLSearchParams(window.location.search);
@@ -123,6 +164,7 @@ export default function NewsletterPage() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    pushDataLayer("newsletter_submit_click", { page: "/newsletter", ...getUtmParams() });
     submitEmail(email);
   };
 
@@ -155,16 +197,16 @@ export default function NewsletterPage() {
                 Elke vrijdag automatisch de hoogste spaarrente in je inbox
               </h1>
               <p className="text-base sm:text-lg text-ink-muted mb-6 max-w-2xl">
-                Je hoeft niet te vergelijken. Wij sturen je elke vrijdag de beste spaarrentes, inclusief promo’s en effectieve
+                Je hoeft niet te vergelijken. Wij sturen je elke vrijdag de beste spaarrentes, inclusief promoâ€™s en effectieve
                 rente.
               </p>
               <p className="text-sm text-ink mb-6 max-w-2xl">
                 Banken wijzigen rentes vaker dan je denkt. Wij sturen je elke vrijdag de top 5 + wat er is veranderd.
               </p>
               <ul className="text-sm sm:text-base text-ink-muted mb-6 space-y-2">
-                <li>• Top 5 spaarrentes (actueel)</li>
-                <li>• Wat is gewijzigd t.o.v. vorige week (↑/↓)</li>
-                <li>• Promo’s + voorwaarden in 1 overzicht</li>
+                <li>â€¢ Top 5 spaarrentes (actueel)</li>
+                <li>â€¢ Wat is gewijzigd t.o.v. vorige week (â†‘/â†“)</li>
+                <li>â€¢ Promoâ€™s + voorwaarden in 1 overzicht</li>
               </ul>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-2 max-w-xl">
@@ -210,7 +252,7 @@ export default function NewsletterPage() {
                 </div>
               )}
               <div className="text-sm text-ink-muted">
-                Vorige week steeg de #1 met +0,10% — abonnees zagen dit als eerste.
+                Vorige week steeg de #1 met +0,10% â€” abonnees zagen dit als eerste.
               </div>
               <div className="text-sm text-ink-muted">Geen spam. 1x per week. Opzeggen met 1 klik.</div>
               <div className="text-xs text-ink-muted mt-2">
@@ -219,7 +261,7 @@ export default function NewsletterPage() {
             </div>
 
             <div className="card p-6 bg-white">
-              <div className="text-sm text-ink-muted mb-3">Voorbeeld van de laatste mail</div>
+              <div className="text-sm text-ink-muted mb-3">Voorbeeld van een mail</div>
               <div className="hidden lg:block rounded-2xl overflow-hidden border border-border bg-white">
                 <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
               </div>

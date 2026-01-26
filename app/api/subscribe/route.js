@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { signToken } from "../../../lib/optin";
+import { getEmailDomain, hashEmail, makeTraceId } from "../../../lib/funnelLog";
 
 const TOKEN_TTL_MS = 1000 * 60 * 60 * 24;
 
@@ -38,7 +39,8 @@ async function contactExists(email) {
   if (!res.ok) {
     console.error("Resend contact lookup failed", {
       status: res.status,
-      email,
+      emailDomain: getEmailDomain(email),
+      emailHashPrefix: hashEmail(email),
     });
     return null;
   }
@@ -50,36 +52,68 @@ async function contactExists(email) {
 export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const email = (body.email || "").trim();
+  const traceId = makeTraceId();
+  const ts = new Date().toISOString();
+  const userAgent = request.headers.get("user-agent") || "";
+  const referer = request.headers.get("referer") || "";
+  const emailDomain = getEmailDomain(email);
+  const emailHashPrefix = hashEmail(email);
+  const logEvent = (event, extra = {}) => {
+    console.log(
+      JSON.stringify({
+        event,
+        traceId,
+        emailDomain,
+        emailHashPrefix,
+        userAgent,
+        referer,
+        ts,
+        ...extra,
+      })
+    );
+  };
+
+  logEvent("subscribe_start");
+
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    return NextResponse.json({ error: "Ongeldig e-mailadres" }, { status: 400 });
+    logEvent("subscribe_fail", { errorCode: "invalid_email" });
+    return NextResponse.json({ error: "Ongeldig e-mailadres", code: "invalid_email", traceId }, { status: 400 });
   }
 
   const secret = process.env.SIGNING_SECRET;
   if (!secret) {
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    logEvent("subscribe_fail", { errorCode: "server_misconfigured" });
+    return NextResponse.json({ error: "Server misconfigured", code: "server_misconfigured", traceId }, { status: 500 });
   }
 
   const baseUrl = process.env.APP_BASE_URL;
   if (!baseUrl) {
-    return NextResponse.json({ error: "APP_BASE_URL ontbreekt" }, { status: 500 });
+    logEvent("subscribe_fail", { errorCode: "missing_app_base_url" });
+    return NextResponse.json({ error: "APP_BASE_URL ontbreekt", code: "missing_app_base_url", traceId }, { status: 500 });
   }
   const cleanBaseUrl = baseUrl.replace(/\/$/, "");
 
   try {
     const exists = await contactExists(email);
     if (exists) {
+      logEvent("subscribe_already");
       return NextResponse.json({
         ok: true,
         message: "Dit e-mailadres staat al ingeschreven.",
         already_subscribed: true,
+        traceId,
       });
     }
   } catch (err) {
-    console.error("Resend contact lookup error", { email, error: err?.message || String(err) });
+    console.error("Resend contact lookup error", {
+      emailDomain,
+      emailHashPrefix,
+      error: err?.message || String(err),
+    });
     // If lookup fails, continue with the confirmation flow.
   }
 
-  const token = signToken({ email, exp: Date.now() + TOKEN_TTL_MS }, secret);
+  const token = signToken({ email, exp: Date.now() + TOKEN_TTL_MS, traceId }, secret);
   const confirmUrl = `${cleanBaseUrl}/confirm?token=${encodeURIComponent(token)}`;
 
   const html = `
@@ -97,15 +131,21 @@ export async function POST(request) {
   `;
 
   try {
-    await sendEmail({ to: email, subject: "Bevestig je inschrijving — RenteOverzicht", html });
+    await sendEmail({ to: email, subject: "Bevestig je inschrijving â€” RenteOverzicht", html });
   } catch (err) {
-    return NextResponse.json({ error: err.message || "Email send failed" }, { status: 502 });
+    logEvent("subscribe_send_fail", { errorCode: "email_send_failed" });
+    return NextResponse.json(
+      { error: err.message || "Email send failed", code: "email_send_failed", traceId },
+      { status: 502 }
+    );
   }
 
+  logEvent("subscribe_confirm_sent");
   return NextResponse.json({
     ok: true,
     message: "Check je inbox (en spam/promoties) en klik op de bevestigingslink.",
     double_opt_in: true,
+    traceId,
   });
 }
 
