@@ -168,7 +168,7 @@ export default function NewsletterPage() {
     submitEmail(email);
   };
 
-  return (
+return (
     <div className="min-h-screen bg-white text-ink">
       <header className="sticky top-0 z-20 backdrop-blur bg-white/80 border-b border-border">
         <div className="container-wide flex items-center justify-between py-3">
@@ -186,9 +186,7 @@ export default function NewsletterPage() {
           <div className="container-wide grid gap-10 lg:grid-cols-2 items-start">
             <div>
               <div className="flex flex-wrap gap-2 items-center text-xs text-ink-muted mb-3">
-                <span className="pill bg-white border border-border" title={`Laatst gecheckt: ${checkedAt}`}>
-                  Laatst gecheckt: {checkedAt}
-                </span>
+                
                 <span className="pill bg-white border border-border">Geen spam</span>
                 <span className="pill bg-white border border-border">EU depositogarantie</span>
                 <span className="pill bg-white border border-border">Onafhankelijk</span>
@@ -197,16 +195,16 @@ export default function NewsletterPage() {
                 Elke vrijdag automatisch de hoogste spaarrente in je inbox
               </h1>
               <p className="text-base sm:text-lg text-ink-muted mb-6 max-w-2xl">
-                Je hoeft niet te vergelijken. Wij sturen je elke vrijdag de beste spaarrentes, inclusief promoâ€™s en effectieve
+                Je hoeft niet te vergelijken. Wij sturen je elke vrijdag de beste spaarrentes, inclusief promo’s en effectieve
                 rente.
               </p>
               <p className="text-sm text-ink mb-6 max-w-2xl">
                 Banken wijzigen rentes vaker dan je denkt. Wij sturen je elke vrijdag de top 5 + wat er is veranderd.
               </p>
               <ul className="text-sm sm:text-base text-ink-muted mb-6 space-y-2">
-                <li>â€¢ Top 5 spaarrentes (actueel)</li>
-                <li>â€¢ Wat is gewijzigd t.o.v. vorige week (â†‘/â†“)</li>
-                <li>â€¢ Promoâ€™s + voorwaarden in 1 overzicht</li>
+                <li>• Top 5 spaarrentes (actueel)</li>
+                <li>• Wat is gewijzigd t.o.v. vorige week (↑/↓)</li>
+                <li>• Promo’s + voorwaarden in 1 overzicht</li>
               </ul>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-3 mb-2 max-w-xl">
@@ -252,7 +250,7 @@ export default function NewsletterPage() {
                 </div>
               )}
               <div className="text-sm text-ink-muted">
-                Vorige week steeg de #1 met +0,10% â€” abonnees zagen dit als eerste.
+                Vorige week steeg de #1 met +0,10% — abonnees zagen dit als eerste.
               </div>
               <div className="text-sm text-ink-muted">Geen spam. 1x per week. Opzeggen met 1 klik.</div>
               <div className="text-xs text-ink-muted mt-2">
@@ -261,7 +259,7 @@ export default function NewsletterPage() {
             </div>
 
             <div className="card p-6 bg-white">
-              <div className="text-sm text-ink-muted mb-3">Voorbeeld van een mail</div>
+              <div className="text-sm text-ink-muted mb-3">Voorbeeld van de laatste mail</div>
               <div className="hidden lg:block rounded-2xl overflow-hidden border border-border bg-white">
                 <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
               </div>
